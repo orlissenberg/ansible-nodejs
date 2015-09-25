@@ -4,3 +4,6 @@
 # http://docs.ansible.com/ansible/npm_module.html
 
 - npm: name=gulp global=yes
+
+# Required by gulp-notify
+- apt: name=libnotify-bin
