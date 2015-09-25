@@ -1,0 +1,6 @@
+---
+
+# http://gruntjs.com/installing-grunt
+# http://docs.ansible.com/ansible/npm_module.html
+
+- npm: name=grunt-cli global=yes

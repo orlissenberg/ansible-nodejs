@@ -1,0 +1,15 @@
+---
+# tasks file for ansible-nodejs
+# http://docs.ansible.com/ansible/shell_module.html
+
+- include: binaries.yml
+
+# Various Node.js related tools.
+- include: grunt.yml
+  when: nodejs_install_grunt
+
+- include: gulp.yml
+  when: nodejs_install_gulp
+
+- include: coffee.yml
+  when: nodejs_install_coffee_script

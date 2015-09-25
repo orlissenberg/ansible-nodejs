@@ -1,0 +1,5 @@
+---
+
+# http://coffeescript.org/
+
+- npm: name=coffee-script global=yes

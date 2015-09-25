@@ -1,0 +1,30 @@
+---
+
+# Debian Wheezy: WARNING: C++ compiler too old, need g++ 4.8 or clang++ 3.4 (CXX=g++)
+
+- apt: upgrade=dist
+
+# Dependencies
+- apt: name={{ item }} state=present
+  with_items:
+    - g++
+    - clang
+
+- get_url: url=https://nodejs.org/dist/{{ nodejs_version }}/node-{{ nodejs_version }}.tar.gz mode=0644 validate_certs=False
+  args:
+      dest: /tmp/node-{{ nodejs_version }}.tar.gz
+
+# Could add a sha256sum at this point ...
+
+- unarchive: src=/tmp/node-{{ nodejs_version }}.tar.gz dest=/tmp
+  args:
+    creates: /tmp/{{ nodejs_build_path }}
+
+# Build from source, do you have time to get coffee ... yes!
+- shell: ./configure chdir=/tmp/{{ nodejs_build_path }}
+  args:
+    creates:
+
+- shell: make chdir=/tmp/{{ nodejs_build_path }}
+
+- shell: make install chdir=/tmp/{{ nodejs_build_path }}

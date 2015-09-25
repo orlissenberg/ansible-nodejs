@@ -1,0 +1,6 @@
+---
+
+# https://github.com/gulpjs/gulp/blob/master/docs/README.md
+# http://docs.ansible.com/ansible/npm_module.html
+
+- npm: name=gulp global=yes

@@ -1,0 +1,9 @@
+---
+# defaults file for ansible-nodejs
+
+nodejs_version: v4.1.1
+nodejs_build_path: node-{{ nodejs_version }}
+
+nodejs_install_gulp: false
+nodejs_install_grunt: false
+nodejs_install_coffee_script: false
