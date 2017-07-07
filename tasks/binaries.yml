@@ -1,45 +1,64 @@
 ---
 
-# https://nodejs.org/dist/v4.1.1/node-v4.1.1-linux-x64.tar.gz
+#https://nodejs.org/dist/v8.1.3/node-v8.1.3-linux-x64.tar.gz
 
-- get_url: url=https://nodejs.org/dist/{{ nodejs_version }}/node-{{ nodejs_version }}-linux-x64.tar.gz mode=0644 validate_certs=False
+- name: Download Node.js binary
+  get_url: url=https://nodejs.org/dist/{{ nodejs_version }}/node-{{ nodejs_version }}-linux-x64.tar.gz mode=0644 validate_certs=False
   args:
       dest: /tmp/node-{{ nodejs_version }}-linux-x64.tar.gz
 
-# Could add a sha256sum at this point ...
+- name: Create checksum sha256 file
+  shell: "echo \"{{ nodejs_x64_sha256 }}  node-{{ nodejs_version }}-linux-x64.tar.gz\" > node-{{ nodejs_version }}-linux-x64.tar.gz.sha256"
+  args:
+    chdir: /tmp
 
-- unarchive: src=/tmp/node-{{ nodejs_version }}-linux-x64.tar.gz dest=/usr/local
+- name: Checksum sha256
+  shell: sha256sum node-{{ nodejs_version }}-linux-x64.tar.gz.sha256 -c
+  args:
+    chdir: /tmp
+
+- name: Unarchive Node.js binary
+  unarchive: src=/tmp/node-{{ nodejs_version }}-linux-x64.tar.gz dest=/usr/local
   args:
     creates: /usr/local/{{ nodejs_build_path }}-linux-x64
 
-- file: src=/usr/local/{{ nodejs_build_path }}-linux-x64 dest=/usr/local/nodejs
+- name: Link /usr/bin/nodejs
+  file: src=/usr/local/{{ nodejs_build_path }}-linux-x64 dest=/usr/local/nodejs
   args:
     owner: root
     group: root
     state: link
 
-- file: src=/usr/local/nodejs/bin/npm dest=/usr/bin/npm
+- name: Link /usr/bin/npm
+  file: src=/usr/local/nodejs/bin/npm dest=/usr/bin/npm
   args:
     owner: root
     group: root
     state: link
 
-- file: src=/usr/local/nodejs/bin/node dest=/usr/bin/node
+- name: Link /usr/bin/node
+  file: src=/usr/local/nodejs/bin/node dest=/usr/bin/node
   args:
     owner: root
     group: root
     state: link
+
+- name: Luckily, npm knows how to update itself!
+  shell: "npm install npm@latest -g"
 
 # http://docs.ansible.com/ansible/lineinfile_module.html
-- lineinfile: dest=/etc/profile line="export PATH=$PATH:/usr/local/nodejs/bin"
+- name: Create Node.js path in /ect/profile
+  lineinfile: dest=/etc/profile line="export PATH=$PATH:/usr/local/nodejs/bin"
   args:
     state: present
 
 # Path for ZSH (if available)
-- stat: path=/etc/zsh/zlogin
+- name: Check zlogin availability
+  stat: path=/etc/zsh/zlogin
   register: nodejs_zlogin
 
-- lineinfile: dest=/etc/zsh/zlogin line="export PATH=$PATH:/usr/local/nodejs/bin"
+- name: Create Node.js path in /etc/zsh/zlogin
+  lineinfile: dest=/etc/zsh/zlogin line="export PATH=$PATH:/usr/local/nodejs/bin"
   when: nodejs_zlogin.stat.exists == True
   args:
     state: present

@@ -2,4 +2,5 @@
 
 # http://coffeescript.org/
 
-- npm: name=coffee-script global=yes
+- name: Install coffeescript globally
+  npm: name=coffee-script global=yes

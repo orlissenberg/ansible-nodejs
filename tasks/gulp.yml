@@ -3,7 +3,9 @@
 # https://github.com/gulpjs/gulp/blob/master/docs/README.md
 # http://docs.ansible.com/ansible/npm_module.html
 
-- npm: name=gulp global=yes
+- name: Install gulp globally
+  npm: name=gulp global=yes
 
 # Required by gulp-notify
-- apt: name=libnotify-bin
+- name: Install libnotify binary for gulp notify
+  apt: name=libnotify-bin

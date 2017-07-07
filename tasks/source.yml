@@ -14,7 +14,14 @@
   args:
       dest: /tmp/node-{{ nodejs_version }}.tar.gz
 
-# Could add a sha256sum at this point ...
+- shell: "echo \"{{ nodejs_sha256 }}  node-{{ nodejs_version }}.tar.gz\" > node-{{ nodejs_version }}.tar.gz.sha256"
+  args:
+    chdir: /tmp
+
+- name: checksum sha256
+  shell: sha256sum node-{{ nodejs_version }}.tar.gz.sha256 -c
+  args:
+    chdir: /tmp
 
 - unarchive: src=/tmp/node-{{ nodejs_version }}.tar.gz dest=/tmp
   args:
